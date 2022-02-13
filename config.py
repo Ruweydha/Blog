@@ -8,6 +8,8 @@ class Config:
     General configuration parent class
     ''' 
     QUOTES_BASE_URL = 'http://quotes.stormconsultancy.co.uk/random.json'
+    SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:R0707318659@localhost/blog'
+
 
 
 class ProdConfig(Config):
