@@ -9,8 +9,7 @@ class Config:
     ''' 
     QUOTES_BASE_URL = 'http://quotes.stormconsultancy.co.uk/random.json'
     SQLALCHEMY_DATABASE_URI = 'postgresql+psycopg2://moringa:R0707318659@localhost/blog'
-
-
+    SECRET_KEY = os.environ.get('SECRET_KEY') 
 
 class ProdConfig(Config):
     '''
