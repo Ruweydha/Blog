@@ -12,3 +12,8 @@ class BlogsForm(FlaskForm):
     title = StringField('Pitch title', validators=[DataRequired()])
     content = CKEditorField('Write your pitch', validators=[DataRequired()] )
     submit = SubmitField('Submit') 
+
+class CommentsForm(FlaskForm):
+    
+    comment = CKEditorField('Comment', validators=[DataRequired()])
+    submit = SubmitField('Submit')
