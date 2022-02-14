@@ -1,0 +1,3 @@
+Hello {{user.username}}
+Welcome to Blog
+We have seen that you have registered as a writer and we want to welcome you. We hope you have an amazing time writing blogs.
