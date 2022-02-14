@@ -1,9 +1,10 @@
+from crypt import methods
 from flask import render_template, abort, redirect, url_for, request, flash
 from flask_login import current_user, login_required
 from . import main
 from ..requests import random
-from ..models import User, Blogs
-from .forms import UpdateProfile, BlogsForm
+from ..models import User, Blogs , Comments
+from .forms import UpdateProfile, BlogsForm , CommentsForm
 from .. import db, photos
 
 @main.route('/')
@@ -68,3 +69,58 @@ def new_blog():
         return redirect(url_for('.profile', uname = current_user.username ))
 
     return render_template('new_blog.html', blog_form = form)
+
+@main.route('/blog/<int:id>', methods =["GET", "POST"])
+def single_blog(id):
+    blog = Blogs.query.filter_by(id = id). first()
+    comments = Comments.query.filter_by(blog_id = id).all()
+
+    return render_template('single_blog.html', blog = blog, comments = comments)
+
+@main.route('/user/comment/new/<int:id>', methods =["GET", "POST"])
+def comment(id):
+    form = CommentsForm()
+    blog = Blogs.query.filter_by(id = id).first()
+
+    if form.validate_on_submit():
+        comment_submitted = form.comment.data
+        new_comment = Comments(comment= comment_submitted, comments = blog )
+        new_comment.save_comment()
+        return redirect(url_for('.single_blog', id = id ))
+
+    return render_template('new_comments.html', comment_form = form)
+
+@main.route('/delete/blog/<int:id>')
+def delete_blog(id):
+    blog_to_delete = Blogs.query.filter_by(id = id).first()
+    
+    db.session.delete(blog_to_delete)
+    db.session.commit()
+    return redirect(url_for('.profile', uname = current_user.username, user = current_user ))   
+
+@main.route('/delete/comment/<int:id>')
+def delete_comment(id):
+    comment_to_delete = Comments.query.filter_by(id = id).first()
+
+    db.session.delete(comment_to_delete)
+    db.session.commit()
+    return redirect(url_for('.single_blog', id = comment_to_delete.blog_id ))    
+
+@main.route('/blog/update/<int:id>', methods = ['GET', 'POST'])
+def update(id):
+    blog = Blogs.query.filter_by(id = id).first() 
+    form = BlogsForm() 
+
+    if form.validate_on_submit():
+        blog.title = form.title.data
+        blog.content = form.content.data
+        db.session.add(blog)
+        db.session.commit()
+        return redirect(url_for('.single_blog', id = blog.id ))
+
+    form.title.data = blog.title
+    form.content.data = blog.content    
+
+    return render_template('edit_blog.html', form = form)
+
+   
