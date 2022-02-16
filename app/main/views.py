@@ -1,19 +1,26 @@
 from crypt import methods
+from operator import ne
 from flask import render_template, abort, redirect, url_for, request, flash
 from flask_login import current_user, login_required
 from . import main
+from ..email import mail_message
 from ..requests import random
-from ..models import User, Blogs , Comments
-from .forms import UpdateProfile, BlogsForm , CommentsForm
+from ..models import User, Blogs , Comments, Subscription
+from .forms import SubscriptionForm, UpdateProfile, BlogsForm , CommentsForm
 from .. import db, photos
 
-@main.route('/')
+@main.route('/', methods =['GET', 'POST'])
 def index():
     
     random_quote = random()
     blogs = Blogs.query.all()
+    form = SubscriptionForm()
+    if form.validate_on_submit():
+        email = form.email.data
+        new_subscriber = Subscription(email = email)
+        new_subscriber.save_email()
 
-    return render_template('index.html', random = random_quote, blogs = blogs, blogger = blogs)
+    return render_template('index.html', random = random_quote, blogs = blogs, blogger = blogs, form = form)
     
 @main.route('/user/<uname>') 
 def profile(uname):
@@ -59,13 +66,15 @@ def update_pic(uname):
 @login_required
 def new_blog():
     form = BlogsForm()
+    subscribers = Subscription.query.all()
 
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
         new_pitch = Blogs(title = title, content = content, blogger = current_user)
         new_pitch.save_blog()
-        flash('Pitch posted')
+        for subsriber in subscribers:
+            mail_message("New post alert", 'email/welcome_user', subsriber.email, user = current_user.username)
         return redirect(url_for('.profile', uname = current_user.username ))
 
     return render_template('new_blog.html', blog_form = form)
@@ -123,4 +132,8 @@ def update(id):
 
     return render_template('edit_blog.html', form = form)
 
-   
+@main.route('/latest')
+def latest()  :
+    blogs = Blogs.query.all()
+
+    return render_template('latest.html', blogs = blogs) 
