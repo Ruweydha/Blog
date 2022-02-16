@@ -19,6 +19,7 @@ def index():
         email = form.email.data
         new_subscriber = Subscription(email = email)
         new_subscriber.save_email()
+        return redirect(url_for('main.index'))  
 
     return render_template('index.html', random = random_quote, blogs = blogs, blogger = blogs, form = form)
     
