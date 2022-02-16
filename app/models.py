@@ -1,3 +1,4 @@
+from enum import unique
 from . import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin
@@ -79,3 +80,13 @@ class Comments(db.Model):
     def get_comment(cls, id) :
         comments = Comments.query.filter_by(blog_id = id).all()
         return comments  
+
+class Subscription(db.Model):
+    __tablename__ = 'subcription'
+
+    id = db.Column(db.Integer, primary_key = True)
+    email = db.Column(db.String(255), unique = True)
+
+    def save_email(self):
+        db.session.add(self)
+        db.session.commit() 
