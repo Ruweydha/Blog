@@ -1,0 +1,22 @@
+@import url('https://fonts.googleapis.com/css2?family=Antic+Didone&family=Libre+Baskerville&family=Licorice&family=Molle:ital@1&family=Poppins:ital@0;1&family=Raleway:wght@300&display=swap');
+body{
+   font-family: 'Poppins';
+}
+#submit{
+   border: 2px solid green;
+   margin-top: 2%;
+}
+.random{
+   box-shadow: 5px 5px 5px #F8F9FA;
+   background-color: grey;
+   color: white;
+   padding: 15px;
+   margin: 2%;
+}
+.all{
+   font-family: Raleways;
+   font-weight: bold;
+}
+.slide{
+   display: none;
+}
