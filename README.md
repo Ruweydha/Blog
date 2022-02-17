@@ -10,7 +10,7 @@ A blog website where a user can view and comment on blogs. A user can also subsc
 2. Navigate to project folder
 
 ```bash
-cd Pitch-hub
+cd Blog
 ```
 
 3. Create a virtual environment
